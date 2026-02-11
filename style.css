@@ -1,0 +1,282 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  background: #000;
+  overflow: hidden;
+}
+
+/* ========= 容器 ========= */
+#app {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ========= 遮罩 ========= */
+.mask {
+  width: 100%;
+  background: #000;
+  z-index: 30;
+  flex-shrink: 0;
+}
+
+/* ========= 放映窗口 ========= */
+#stage {
+  position: relative;
+  width: 100%;
+  background: #fff;
+  overflow: hidden;
+}
+
+/* ========= 内容 ========= */
+#content {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  padding: 2.5rem 2rem;
+  line-height: 1.75;
+  font-size: var(--base-font);
+  color: #000;
+  overflow-y: auto;
+}
+
+/* —— 锁定滚动 —— */
+#content.locked {
+  overflow: hidden;
+}
+
+/* ========= 标题 / 结尾 ========= */
+.film-title,
+.film-end {
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: 0.12em;
+}
+
+.film-title {
+  font-size: 1.8em;
+  margin: 2rem 0 3rem;
+}
+
+/* —— 显影动画 —— */
+.film-title.develop {
+  opacity: 0;
+  filter: blur(6px) brightness(0.6);
+  animation: develop 4.2s ease-out forwards;
+}
+
+.film-end {
+  margin: 4rem 0 2rem;
+  font-size: 1.2em;
+  opacity: 0;
+  filter: blur(4px);
+}
+
+.film-end.reveal {
+  animation: develop 3s ease-out forwards;
+}
+
+/* ========= 特效 ========= */
+.effects {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.film::before,
+.film::after {
+  content: '';
+  position: fixed;
+  width: 120vw;
+  height: 100vh;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(0,0,0,0.18) 0 2px,
+    transparent 4px 38vmin
+  );
+}
+
+.film::before {
+  animation: film-scratch 0.5s steps(1) infinite;
+}
+
+.film::after {
+  left: 30vw;
+  animation: effect-scratch 2.2s infinite;
+}
+
+.noise::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: url("noise.gif");
+  opacity: 0.1;
+}
+
+/* ========= 动画 ========= */
+@keyframes develop {
+  0%   { opacity: 0; filter: blur(6px) brightness(0.5); }
+  60%  { opacity: .85; filter: blur(2px) brightness(1.1); }
+  100% { opacity: 1; filter: blur(0) brightness(1); }
+}
+
+
+@keyframes film-scratch {
+  0%,
+  100% {
+    transform: translateX(0);
+    opacity: 0.5;
+  }
+ 
+  10% {
+    transform: translateX(-1%);
+  }
+ 
+  20% {
+    transform: translateX(1%);
+  }
+ 
+  30% {
+    transform: translateX(-2%);
+    opacity: 0.75;
+  }
+ 
+  40% {
+    transform: translateX(3%);
+  }
+ 
+  50% {
+    transform: translateX(-3%);
+    opacity: 0.5;
+  }
+ 
+  60% {
+    transform: translateX(8%);
+  }
+ 
+  70% {
+    transform: translateX(-3%);
+  }
+ 
+  80% {
+    transform: translateX(10%);
+    opacity: 0.25;
+  }
+ 
+  90% {
+    transform: translateX(-2%);
+  }
+}
+
+
+@keyframes effect-scratch {
+  0% {
+    transform: translateX(0);
+    opacity: 0.75;
+  }
+ 
+  10% {
+    transform: translateX(-1%);
+  }
+ 
+  20% {
+    transform: translateX(1%);
+  }
+ 
+  30% {
+    transform: translateX(-2%);
+  }
+ 
+  40% {
+    transform: translateX(3%);
+  }
+ 
+  50% {
+    transform: translateX(-3%);
+    opacity: 0.5;
+  }
+ 
+  60% {
+    transform: translateX(8%);
+  }
+ 
+  70% {
+    transform: translateX(-3%);
+  }
+ 
+  80% {
+    transform: translateX(10%);
+    opacity: 0.25;
+  }
+ 
+  90% {
+    transform: translateX(20%);
+  }
+ 
+  100% {
+    transform: translateX(30%);
+  }
+}
+
+
+/* ========= 阅读模式 ========= */
+.book #stage {
+  height: 100vh !important;
+  background: #000;
+}
+
+.book #content {
+  color: #fff;
+}
+
+.book .effects,
+.book .mask {
+  display: none;
+}
+
+.book .film-end {
+  opacity: 1;
+  filter: none;
+}
+
+/* ========= 横屏提示 ========= */
+#orientation-hint {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+  background: rgba(0,0,0,0.45);
+  color: #fff;
+  z-index: 100;
+}
+
+#orientation-hint.active {
+  display: flex;
+}
+
+/* ========= 按钮 ========= */
+#toggle {
+  position: fixed;
+  bottom: 1rem;
+  left: 1rem;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  background: #111;
+  color: #fff;
+  font-size: 22px;
+  z-index: 50;
+}
+
+
